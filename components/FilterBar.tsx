@@ -1,0 +1,5 @@
+'use client';
+export default function FilterBar({ value, onChange }: {
+    value: Record<string, string>;
+    onChange: (next: Record<string, string>) => void;
+}) { return <div className="filter-bar">{[['q', 'Search creators'], ['skills', 'Skill'], ['tools', 'Tool'], ['specialization', 'Specialization'], ['min', 'Min ₹'], ['max', 'Max ₹']].map(([key, label]) => <label key={key}>{label}<input type={key === 'min' || key === 'max' ? 'number' : 'search'} min="0" value={value[key] || ''} onChange={e => onChange({ ...value, [key]: e.target.value })} placeholder={label}/></label>)}<label>Content<select value={value.contentTypes || ''} onChange={e => onChange({ ...value, contentTypes: e.target.value })}><option value="">All types</option>{['image', 'video', 'audio', 'animation'].map(t => <option key={t}>{t}</option>)}</select></label><label>Verification<select value={value.verified || ''} onChange={e => onChange({ ...value, verified: e.target.value })}><option value="">All creators</option><option value="tools">Tools verified</option><option value="workflow">Workflow verified</option><option value="pastWork">Past work verified</option></select></label></div>; }

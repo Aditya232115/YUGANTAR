@@ -1,0 +1,7 @@
+'use client';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { request } from '@/lib/client';
+import type { SessionUser } from '@/types';
+export default function Navbar() { const [user, setUser] = useState<SessionUser | null>(null), [dark, setDark] = useState(false); const pathname = usePathname(); useEffect(() => { void request<SessionUser | null>('/api/auth/me').then(setUser); }, [pathname]); useEffect(() => { const d = localStorage.getItem('yg-theme') === 'dark'; setDark(d); document.documentElement.classList.toggle('dark', d); }, []); function toggle() { const d = !dark; setDark(d); localStorage.setItem('yg-theme', d ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', d); } return <header className="navbar no-print"><Link href="/" className="logo"><span className="logo-mark">Y</span> YUGANTAR<span className="prototype">BETA</span></Link><nav><Link href="/discover">Discover creators</Link>{user ? <><Link href={`/${user.role}/dashboard`}>Dashboard</Link>{user.role === 'brand' ? <Link href="/brand/briefs">My briefs</Link> : <Link href="/creator/profile">My studio</Link>}<button className="link-button" onClick={async () => { await request('/api/auth/logout', {}); window.location.href = '/'; }}>Log out</button></> : <Link href="/login">Log in</Link>}<button onClick={toggle} aria-label="Toggle colour theme" className="theme-toggle">{dark ? '☀ Light' : '☾ Dark'}</button></nav></header>; }
